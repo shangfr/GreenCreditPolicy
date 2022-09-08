@@ -15,9 +15,6 @@ from charts import render_china, render_radar,render_wordcloud, AgGrid
 st.set_page_config(page_title="Green_Credit", layout="wide")
 st.sidebar.header("绿色金融")
 
-st.write("DB username:", st.secrets["db_username"])
-st.write("DB password:", st.secrets["db_password"])
-
 @st.cache
 def green_data(slct):
     url = 'data/data01.xlsx'
