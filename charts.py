@@ -2,6 +2,7 @@ import json
 from streamlit_echarts import Map
 from streamlit_echarts import JsCode
 from streamlit_echarts import st_echarts
+from st_aggrid import AgGrid
 
 data_list_demo = [
     {"name": "北京市", "value": 4822023},
