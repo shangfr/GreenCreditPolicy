@@ -69,7 +69,7 @@ def render_china(data_list,slct):
         },
         "toolbox": {
             "show": True,
-            "left": "left",
+            "left": "right",
             "top": "bottom",
             "feature": {
                 "dataView": {
