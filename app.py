@@ -21,6 +21,12 @@ def green_data(slct):
     data = pd.read_excel(url, slct)
     return data
 
+@st.cache(allow_output_mutation=True)
+def miit_data(slct):
+    url = f'data/{slct}.csv'
+    data = pd.read_csv(url)
+    return data
+
 
 @st.cache
 def get_avp(tle):
@@ -98,19 +104,26 @@ def show_info():
 
 
 def show_name_list():
-
-    name_list = ['绿色园区名单', '绿色工厂名单', '绿色供应链管理企业名单']
-    slct = st.sidebar.selectbox('名单查询', name_list)
-    df = green_data(slct)
+    col1, col2 = st.columns(2)
+    name_list = ['绿色工业园区名单', '绿色工厂名单', '绿色供应链管理示范企业名单','绿色设计产品名单']
+    slct = col1.selectbox('名单查询', name_list)
+    #df = green_data(slct)
+    df = miit_data(slct)
+    df.replace('新疆兵团','新疆', inplace = True)
+    
+    slct_pc = col2.selectbox('批次', ['全部',1,2,3,4,5,2021])
+    if slct_pc != '全部':
+        df = df[df['批次'] == slct_pc]
     df_v = df['地区'].value_counts().to_frame().reset_index()
     df_v.columns = ['name', 'value']
-    data_list = df_v.to_dict('records')
 
-    col1, col2 = st.columns(2)
-    with col1:
-        AgGrid(df)
-    with col2:
-        render_china(data_list, slct.replace('名单', '分布'))
+    data_list = df_v.to_dict('records')
+    with st.expander(f"{slct.replace('名单','总数')}：{len(df)}"):
+        AgGrid(df,fit_columns_on_grid_load=True, height="500px")
+        
+
+    render_china(data_list, slct.replace('名单', '分布'))
+
 
 
 def show_tool():

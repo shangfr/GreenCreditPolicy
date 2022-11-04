@@ -68,13 +68,19 @@ def render_china(data_list,slct):
             "calculable": True,
         },
         "toolbox": {
-            "show": False,
+            "show": True,
             "left": "left",
-            "top": "top",
+            "top": "bottom",
             "feature": {
-                "dataView": {"readOnly": False},
-                "restore": {},
-                "saveAsImage": {},
+                "dataView": {
+                    "show": True,
+                },
+                "restore": {
+                    "show": True
+                },
+                "saveAsImage": {
+                    "show": False
+                }
             },
         },
         "series": [
