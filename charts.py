@@ -12,9 +12,65 @@ data_list_demo = [
 ]
 
 
+def render_bar():
+
+    s_dict = {'绿色工业园区': [24, 22, 34, 39, 53, 52],
+              '绿色工厂': [201, 208, 391, 602, 719, 662],
+              '绿色供应链管理示范企业': [15, 4, 21, 50, 99, 107],
+              '绿色设计产品': [193, 53, 489, 371, 1068, 989]}
+
+    name_list = list(s_dict.keys())
+
+    options = {
+        "tooltip": {"trigger": "axis", "axisPointer": {"type": "shadow"}},
+        "legend": {
+            "data": name_list
+        },
+        "grid": {"left": "3%", "right": "4%", "bottom": "3%", "containLabel": True},
+        "xAxis": {"type": "value"},
+        "yAxis": {
+            "type": "category",
+            "data": ['第一批', '第二批', '第三批', '第四批', '第五批', '第六批'],
+        },
+        "series": [
+            {
+                "name": name_list[0],
+                "type": "bar",
+                "stack": "total",
+                "label": {"show": True},
+                "emphasis": {"focus": "series"},
+                "data": s_dict[name_list[0]],
+            },
+            {
+                "name": name_list[1],
+                "type": "bar",
+                "stack": "total",
+                "label": {"show": True},
+                "emphasis": {"focus": "series"},
+                "data": s_dict[name_list[1]],
+            },
+            {
+                "name": name_list[2],
+                "type": "bar",
+                "stack": "total",
+                "label": {"show": True},
+                "emphasis": {"focus": "series"},
+                "data": s_dict[name_list[2]],
+            },
+            {
+                "name": name_list[3],
+                "type": "bar",
+                "stack": "total",
+                "label": {"show": True},
+                "emphasis": {"focus": "series"},
+                "data": s_dict[name_list[3]],
+            },
+        ],
+    }
+    st_echarts(options=options, height="300px")
 
 
-def render_china(data_list,slct):
+def render_china(data_list, slct):
     formatter = JsCode(
         "function (params) {"
         + "var value = (params.value + '').split('.');"
@@ -97,10 +153,10 @@ def render_china(data_list,slct):
     }
     st_echarts(options, map=map, height="500px")
 
-def render_radar(cmp_a = "企业A",
-                 data_a = [30,30,20,10,50,60],
-                 data_b = [80,80,80,70,60,90]):
-    
+
+def render_radar(cmp_a="企业A",
+                 data_a=[30, 30, 20, 10, 50, 60],
+                 data_b=[80, 80, 80, 70, 60, 90]):
 
     option = {
         "title": {"text": "企业绿色评价"},
@@ -131,7 +187,7 @@ def render_radar(cmp_a = "企业A",
                         "name": "行业",
                         "lineStyle": {
                             "type": 'dashed'
-                          },
+                        },
                     },
                 ],
             }
@@ -141,11 +197,7 @@ def render_radar(cmp_a = "企业A",
     st_echarts(option, height="500px")
 
 
-
-
 def render_wordcloud(data):
 
-    wordcloud_option = {"series": [{"type": "wordCloud", "data": data}]}
+    wordcloud_option = {"series": [{"type": "wordCloud", "data": data, 'color': '#00ae9d'}]}
     st_echarts(wordcloud_option)
-    
-    
