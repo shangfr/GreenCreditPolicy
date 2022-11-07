@@ -127,23 +127,6 @@ def show_info():
 def show_name_list():
 
     name_list = ['绿色工业园区名单', '绿色工厂名单', '绿色供应链管理示范企业名单', '绿色设计产品名单']
-
-    st.subheader(":bar_chart: 绿色示范企业统计")
-    render_bar()
-    st.markdown("---")
-    col00, col01 = st.columns(2)
-    col02, col03 = st.columns(2)
-
-    col_list = [col00, col01, col02, col03]
-    analysis_data = anyls_data()
-    map_dict = analysis_data['map_dict']
-
-    for index, item in enumerate(name_list):
-        with col_list[index]:
-
-            render_china(map_dict[item], '全国'+item.replace('名单', '分布'))
-            st.markdown("---")
-
     st.subheader("🗒️ 绿色示范企业查询")
     col1, col2, col3 = st.columns(3)
     slct = col1.selectbox('名单查询', name_list)
@@ -162,18 +145,10 @@ def show_name_list():
 
 
 def show_tool():
-    st.subheader("🗒️ 绿色企业申报")
-    gkeywords = ["回收", "节能", "新能源", "噪声", "太阳能", "储能", "降噪", "汽车充电设施", "高性能", "循环", "除尘", "环保设备", "污染", "环境监测", "风力发电", "废气", "共享单车", "热泵", "节水", "风能",
-                 "能耗", "环境影响", "铁路建设", "回收利用", "水处理", "生态修复", "废旧", "地铁", "装配式建筑", "减振", "燃料电池", "城市轨道交通", "园林绿化", "风力", "低能耗", "再生利用", "清淤", "废弃", "再生", "节约"]
-
-    data = [
-        {"name": name, "value": random.randint(200, 1000)}
-        for name in gkeywords
-    ]
+    st.subheader("📠 绿色企业申报")
     with st.sidebar:
-        st.markdown(
-            '[2022年度绿色制造名单申报](https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2022/art_3369f72687b447d799e6d155b9c7f20b.html)')
-        render_wordcloud(data)
+        st.info(
+            '[2022年度绿色制造名单申报说明](https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2022/art_3369f72687b447d799e6d155b9c7f20b.html)')
         st.markdown('---')
 
     name_list = ['绿色工厂', '绿色设计产品', '绿色工业园区',  '绿色供应链管理企业']
@@ -253,7 +228,26 @@ def show_policy():
 
 
 def show_graph():
-    st.subheader("🗒️ 绿色企业图谱")
+
+    name_list = ['绿色工业园区名单', '绿色工厂名单', '绿色供应链管理示范企业名单', '绿色设计产品名单']
+
+    st.subheader("📊 绿色示范企业统计")
+    render_bar()
+    st.markdown("---")
+    col00, col01 = st.columns(2)
+    col02, col03 = st.columns(2)
+
+    col_list = [col00, col01, col02, col03]
+    analysis_data = anyls_data()
+    map_dict = analysis_data['map_dict']
+
+    for index, item in enumerate(name_list):
+        with col_list[index]:
+
+            render_china(map_dict[item], '全国'+item.replace('名单', '分布'))
+            st.markdown("---")
+            
+    st.subheader("📊 绿色企业图谱")
     from PIL import Image
     image1 = Image.open('img/p1.png')
     image2 = Image.open('img/p2.png')
@@ -261,7 +255,16 @@ def show_graph():
     col0.image(image1, caption='绿色判断图谱')
     col1.image(image2, caption='绿色产业链图谱')
 
+    st.subheader("📊 绿色企业词云")
+    gkeywords = ["回收", "节能", "新能源", "噪声", "太阳能", "储能", "降噪", "汽车充电设施", "高性能", "循环", "除尘", "环保设备", "污染", "环境监测", "风力发电", "废气", "共享单车", "热泵", "节水", "风能",
+                 "能耗", "环境影响", "铁路建设", "回收利用", "水处理", "生态修复", "废旧", "地铁", "装配式建筑", "减振", "燃料电池", "城市轨道交通", "园林绿化", "风力", "低能耗", "再生利用", "清淤", "废弃", "再生", "节约"]
 
+    data = [
+        {"name": name, "value": random.randint(200, 1000)}
+        for name in gkeywords
+    ]
+    render_wordcloud(data)
+    
 def show_vs():
     st.markdown('[绿贷云](https://lhgf.lhcis.com/auth/login#banner)')
     st.markdown('[寰宇普惠](https://fintech.uniinclusive.com/)')
