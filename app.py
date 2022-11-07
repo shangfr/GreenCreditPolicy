@@ -9,11 +9,21 @@ import random
 import pandas as pd
 import streamlit as st
 from tools import avp
-from charts import render_china, render_radar,render_wordcloud, AgGrid,render_bar
+from charts import render_china, render_radar, render_wordcloud, render_bar
+
+st.set_page_config(
+    page_title="Green_Credit",
+    page_icon="💰",
+    layout="wide",
+    initial_sidebar_state="expanded",
+    menu_items={
+        'About': "# Green_Credit. This is an *extremely* cool app!"
+    }
+)
 
 
-st.set_page_config(page_title="Green_Credit", layout="wide")
-st.sidebar.title("🥦 绿色金融")
+st.sidebar.title("💰 绿色金融")
+
 
 @st.cache
 def green_data(slct):
@@ -21,11 +31,13 @@ def green_data(slct):
     data = pd.read_excel(url, slct)
     return data
 
+
 @st.cache(allow_output_mutation=True)
 def miit_data(slct):
     url = f'data/{slct}.csv'
     data = pd.read_csv(url)
     return data
+
 
 @st.cache
 def anyls_data():
@@ -34,8 +46,8 @@ def anyls_data():
     with open(url, 'rb') as f:
         analysis_data = pickle.load(f)
     return analysis_data
-        
-    
+
+
 @st.cache
 def get_avp(tle):
     data = avp(tle)
@@ -43,10 +55,10 @@ def get_avp(tle):
 
 
 @st.cache
-def cmp_model(avp_data,agree):
+def cmp_model(avp_data, agree):
     avp_tag = len(avp_data) > 0
     if agree and avp_tag:
-        if  len(avp_data['avp']) > 25:
+        if len(avp_data['avp']) > 25:
             g_value = "L1"
         else:
             g_value = "L2"
@@ -59,29 +71,29 @@ def cmp_model(avp_data,agree):
 
     g_dict = {"L1": 3.5, "L2": 3.75, "L3": 3.85, "L4": 3.9, "L5": 3.95}
     g_delta = g_dict[g_value]
-    
 
     if len(avp_data) > 0:
-        if  len(avp_data['avp']) > 20:
-            sa,sb = 80,100
+        if len(avp_data['avp']) > 20:
+            sa, sb = 80, 100
         else:
-            sa,sb = 70,90
+            sa, sb = 70, 90
     else:
-        sa,sb = 50,70
+        sa, sb = 50, 70
 
-    data_a = [random.randint(sa,sb) for i in range(6)]
+    data_a = [random.randint(sa, sb) for i in range(6)]
     data_b = [80, 80, 80, 70, 60, 90]
 
-    return data_a,data_b,g_value,g_delta
+    return data_a, data_b, g_value, g_delta
+
 
 def stop(word=''):
     if len(word) == 0:
         st.stop()
-        
-        
+
+
 def show_info():
     st.subheader("🗒️ 目录说明")
-    col0,col1,col2 = st.columns(3)
+    col0, col1, col2 = st.columns(3)
     df = green_data('绿色产业指导目录')
     ctlg1 = df['一级目录'].unique()
     slct1 = col0.selectbox('一级目录', ctlg1)
@@ -96,7 +108,7 @@ def show_info():
 
     ctlg4 = df.loc[df['目录'] == slct3, '说明'].unique()
     slct4 = ctlg4[0]
-    
+
     st.markdown(slct4.replace("。", "。\n> "))
     products = slct4.replace("包括", "").replace(
         "和", "、").split('。')[0].split('、')
@@ -113,57 +125,59 @@ def show_info():
 
 
 def show_name_list():
-    
-    name_list = ['绿色工业园区名单', '绿色工厂名单', '绿色供应链管理示范企业名单','绿色设计产品名单']
-    
+
+    name_list = ['绿色工业园区名单', '绿色工厂名单', '绿色供应链管理示范企业名单', '绿色设计产品名单']
+
     st.subheader(":bar_chart: 绿色示范企业统计")
     render_bar()
     st.markdown("---")
     col00, col01 = st.columns(2)
     col02, col03 = st.columns(2)
-    
-    col_list = [col00, col01,col02, col03]
+
+    col_list = [col00, col01, col02, col03]
     analysis_data = anyls_data()
     map_dict = analysis_data['map_dict']
-    
+
     for index, item in enumerate(name_list):
         with col_list[index]:
-            
+
             render_china(map_dict[item], '全国'+item.replace('名单', '分布'))
             st.markdown("---")
-    
+
     st.subheader("🗒️ 绿色示范企业查询")
-    col1, col2, col3  = st.columns(3)
+    col1, col2, col3 = st.columns(3)
     slct = col1.selectbox('名单查询', name_list)
     #df = green_data(slct)
     df = miit_data(slct)
-    df.replace('新疆兵团','新疆', inplace = True)
-    
-    slct_pc = col2.selectbox('批次', [1,2,3,4,5,2021])
+    df.replace('新疆兵团', '新疆', inplace=True)
+
+    slct_pc = col2.selectbox('批次', [1, 2, 3, 4, 5, 2021])
     df0 = df[df['批次'] == slct_pc]
     ctlg1 = df0['地区'].unique()
     slct1 = col3.selectbox('地区', ctlg1)
     df1 = df[(df['地区'] == slct1) & (df['批次'] == slct_pc)]
 
     st.info(f"{slct1}{slct.replace('名单','总数')}：{len(df1)}")
-    st.dataframe(df1.drop(['序号','地区','批次'], axis = 1))
+    st.dataframe(df1.drop(['序号', '地区', '批次'], axis=1))
 
 
 def show_tool():
     st.subheader("🗒️ 绿色企业申报")
-    gkeywords = ["回收","节能","新能源","噪声","太阳能","储能","降噪","汽车充电设施","高性能","循环","除尘","环保设备","污染","环境监测","风力发电","废气","共享单车","热泵","节水","风能","能耗","环境影响","铁路建设","回收利用","水处理","生态修复","废旧","地铁","装配式建筑","减振","燃料电池","城市轨道交通","园林绿化","风力","低能耗","再生利用","清淤","废弃","再生","节约"]
-    
+    gkeywords = ["回收", "节能", "新能源", "噪声", "太阳能", "储能", "降噪", "汽车充电设施", "高性能", "循环", "除尘", "环保设备", "污染", "环境监测", "风力发电", "废气", "共享单车", "热泵", "节水", "风能",
+                 "能耗", "环境影响", "铁路建设", "回收利用", "水处理", "生态修复", "废旧", "地铁", "装配式建筑", "减振", "燃料电池", "城市轨道交通", "园林绿化", "风力", "低能耗", "再生利用", "清淤", "废弃", "再生", "节约"]
+
     data = [
-        {"name": name, "value": random.randint(200,1000)}
+        {"name": name, "value": random.randint(200, 1000)}
         for name in gkeywords
     ]
     with st.sidebar:
-        st.markdown('[2022年度绿色制造名单申报](https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2022/art_3369f72687b447d799e6d155b9c7f20b.html)')
+        st.markdown(
+            '[2022年度绿色制造名单申报](https://www.miit.gov.cn/zwgk/zcwj/wjfb/tz/art/2022/art_3369f72687b447d799e6d155b9c7f20b.html)')
         render_wordcloud(data)
         st.markdown('---')
-    
-    name_list = ['绿色工厂','绿色设计产品','绿色工业园区',  '绿色供应链管理企业']
-    
+
+    name_list = ['绿色工厂', '绿色设计产品', '绿色工业园区',  '绿色供应链管理企业']
+
     search_cmp = st.text_input('企业名称:', '北京京东方显示技术有限公司')
     stop(search_cmp)
     avp_data = get_avp(search_cmp)
@@ -177,9 +191,9 @@ def show_tool():
                 outtxt = outtxt + output
             st.markdown(outtxt)
 
-    col0,col1 = st.columns([2,3])
+    col0, col1 = st.columns([2, 3])
     slct3 = col0.selectbox('申报项目', name_list)
-    
+
     search_word = col1.text_input('绿色产品/服务：', 'LED')
     stop(search_word)
 
@@ -189,7 +203,7 @@ def show_tool():
     if result_df.shape[0] > 0:
         ctlg1 = result_df['一级目录'].unique()
         slct1 = st.selectbox('信贷行业：', ctlg1)
-    
+
         ctlg3 = result_df.loc[df['一级目录'] == slct1, '目录'].unique()
         slct3 = st.selectbox('资金用途：', ctlg3)
         ctlg4 = df.loc[df['目录'] == slct3, '说明'].unique()
@@ -197,7 +211,8 @@ def show_tool():
             slct4 = ctlg4[0]
             # st.subheader("目录说明")
             #st.markdown(slct4.replace("。","。\n> "))
-            products = slct4.replace("包括", "").replace("和", "、").split('。')[0].split('、')
+            products = slct4.replace("包括", "").replace(
+                "和", "、").split('。')[0].split('、')
             slct16 = st.multiselect('产品清单：', products)
             stop(slct16)
             ctlg5 = df.loc[df['说明'] == slct4, '国标'].unique()
@@ -207,7 +222,8 @@ def show_tool():
             else:
                 slct6 = st.radio('标准目录：', slct5.split("&"))
             agree = st.checkbox('是否满足标准要求')
-            st.file_uploader('补充资料', help='企业经营活动相关信息，包括经营票据、项目环评证书、合同信息、项目信息等')
+            st.file_uploader(
+                '补充资料', help='企业经营活动相关信息，包括经营票据、项目环评证书、合同信息、项目信息等')
             if st.button('申请'):
                 st.success('申请成功，等待审核。')
                 import time
@@ -215,10 +231,9 @@ def show_tool():
                 for percent_complete in range(100):
                     time.sleep(0.01)
                     my_bar.progress(percent_complete + 1)
-    
 
-                data_a,data_b,g_value,g_delta = cmp_model(avp_data,agree)
-                
+                data_a, data_b, g_value, g_delta = cmp_model(avp_data, agree)
+
                 col1, col2 = st.columns([1, 3])
                 with col2:
                     render_radar(search_cmp, data_a, data_b)
@@ -230,12 +245,13 @@ def show_tool():
     else:
         st.info('没有匹配到相关产品或服务！')
 
+
 def show_policy():
     st.subheader("🗒️ 绿色金融政策列表")
     with open("data/政策.md", 'r', encoding='utf-8') as f:
         st.markdown(f.read())
-    
-    
+
+
 def show_graph():
     st.subheader("🗒️ 绿色企业图谱")
     from PIL import Image
@@ -244,14 +260,13 @@ def show_graph():
     col0, col1 = st.columns(2)
     col0.image(image1, caption='绿色判断图谱')
     col1.image(image2, caption='绿色产业链图谱')
-    
 
 
 def show_vs():
     st.markdown('[绿贷云](https://lhgf.lhcis.com/auth/login#banner)')
     st.markdown('[寰宇普惠](https://fintech.uniinclusive.com/)')
 
-    
+
 tools = ['查询', '申报', '图谱']
 tool_opt = st.sidebar.selectbox('功能:', tools)
 if tool_opt == tools[0]:
