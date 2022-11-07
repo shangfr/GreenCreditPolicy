@@ -199,5 +199,6 @@ def render_radar(cmp_a="企业A",
 
 def render_wordcloud(data):
 
-    wordcloud_option = {"series": [{"type": "wordCloud", "data": data, 'color': '#00ae9d'}]}
+    wordcloud_option = {"series": [
+        {"type": "wordCloud", "data": data, 'color': '#00ae9d'}]}
     st_echarts(wordcloud_option)

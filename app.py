@@ -81,18 +81,18 @@ def stop(word=''):
         
 def show_info():
     st.subheader("🗒️ 目录说明")
-    
+    col0,col1,col2 = st.columns(3)
     df = green_data('绿色产业指导目录')
     ctlg1 = df['一级目录'].unique()
-    slct1 = st.sidebar.selectbox('一级目录', ctlg1)
+    slct1 = col0.selectbox('一级目录', ctlg1)
 
     ctlg2 = df.loc[df['一级目录'] == slct1, '二级目录'].unique()
-    slct2 = st.sidebar.selectbox('二级目录', ctlg2)
+    slct2 = col1.selectbox('二级目录', ctlg2)
 
     gburl = 'https://std.samr.gov.cn/search/std?q='
 
     ctlg3 = df.loc[df['二级目录'] == slct2, '目录'].unique()
-    slct3 = st.selectbox('产业目录', ctlg3)
+    slct3 = col2.selectbox('产业目录', ctlg3)
 
     ctlg4 = df.loc[df['目录'] == slct3, '说明'].unique()
     slct4 = ctlg4[0]
